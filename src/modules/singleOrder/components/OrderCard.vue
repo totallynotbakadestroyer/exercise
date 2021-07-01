@@ -20,9 +20,16 @@
     <div class="card__item purple--text">
       Order URL: <a href="#">{{ item.url }}</a>
     </div>
-    <div style="text-align: center; margin-top: 32px" class="card__actions">
+    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 32px" class="card__actions">
       <el-button type="primary" @click="print">Contact buyer</el-button>
       <el-button type="info" @click="print">Print page</el-button>
+      <el-popconfirm
+        style="margin-left: 10px"
+        @confirm="() => deleteOrder(item.id)"
+        title="Are you sure to delete this order?"
+      >
+        <el-button slot="reference" type="warning">Delete order</el-button>
+      </el-popconfirm>
     </div>
   </el-card>
 </template>
@@ -36,6 +43,14 @@ export default {
     },
   },
   methods: {
+    async deleteOrder(id) {
+      await this.$store.dispatch('deleteOrder', id);
+      this.$notify({
+        title: 'Success!',
+        message: 'Order has been deleted successfully',
+      });
+      await this.$router.push('/');
+    },
     print() {
       this.$notify({ title: 'Not implemented', message: 'Not yet impelemented' });
     },
@@ -43,7 +58,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.card__actions {
+  .el-button {
+    margin-top: 10px;
+  }
+}
 @media (max-width: 450px) {
   img {
     width: 100%;
